@@ -1,4 +1,5 @@
-import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
+import { Sidebar } from "./_components/sidebar";
+import { TopNav } from "./_components/top-nav";
 
 export default function DashboardLayout({
   children,
@@ -6,30 +7,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
-    >
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "1rem 2rem",
-          borderBottom: "1px solid #e5e7eb",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <span style={{ fontWeight: 700, fontSize: "1.125rem" }}>
-            SaaS Foundation
-          </span>
-          <OrganizationSwitcher
-            afterCreateOrganizationUrl="/dashboard"
-            afterSelectOrganizationUrl="/dashboard"
-          />
-        </div>
-        <UserButton />
-      </header>
-      <main style={{ flex: 1, padding: "2rem" }}>{children}</main>
+    <div className="min-h-screen bg-[#f9f9ff]">
+      <Sidebar />
+      <div className="ml-20 flex flex-col min-h-screen">
+        <TopNav />
+        {children}
+      </div>
     </div>
   );
 }
