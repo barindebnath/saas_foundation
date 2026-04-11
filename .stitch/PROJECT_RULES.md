@@ -1,0 +1,12 @@
+# PROJECT RULES:
+- Framework: Next.js 15 App Router
+- Styling: Tailwind CSS utility classes only. No inline styles. No CSS modules.
+- Components: shadcn/ui for all interactive elements (Dialog, Table, Badge, Progress, Input, Select, Button, Card, AlertDialog, Toast)
+- Auth: Clerk (@clerk/nextjs). Use auth() from @clerk/nextjs/server in Server Components. Use useAuth() and useOrganization() in Client Components.
+- Database: Drizzle ORM. Import db from @repo/db. Import schema tables from @repo/db.
+- Icons: lucide-react only. No Material Symbols. No heroicons.
+- Fonts: Use "DM Sans" from next/font/google. Not Inter. Not system fonts.
+- organizationId: ALWAYS derived from auth() server-side. NEVER sent from client. NEVER a form field.
+- File locations: Pages go in apps/web/app/. Shared components go in apps/web/components/.
+- No TypeScript errors. No any types. All props must be typed.
+- No placeholder data in final components. Empty states instead.

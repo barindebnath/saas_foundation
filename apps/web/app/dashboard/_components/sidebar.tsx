@@ -21,11 +21,8 @@ export function Sidebar() {
         <div className="mb-10 flex flex-col items-center">
           <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center">
             <span
-              className="text-[#1c1b1b] text-xl"
-              style={{
-                fontFamily: "Material Symbols Outlined",
-                fontVariationSettings: "'FILL' 1",
-              }}
+              className="text-[#1c1b1b] text-xl font-icon"
+              style={{ fontVariationSettings: "'FILL' 1" }}
             >
               token
             </span>
@@ -46,7 +43,7 @@ export function Sidebar() {
                     : "text-neutral-400 hover:text-white hover:bg-[#474646]/50 border-l-4 border-transparent"
                 }`}
               >
-                <span style={{ fontFamily: "Material Symbols Outlined" }}>
+                <span className="font-icon">
                   {item.icon}
                 </span>
                 <span className="text-[10px] uppercase font-bold tracking-tighter">
@@ -63,7 +60,7 @@ export function Sidebar() {
             className="w-12 h-12 bg-white text-[#1c1b1b] rounded-full flex items-center justify-center hover:bg-neutral-100 transition-colors shadow-lg"
             title="Invite Member"
           >
-            <span style={{ fontFamily: "Material Symbols Outlined" }}>add</span>
+            <span className="font-icon">add</span>
           </button>
           <div className="pt-4 border-t border-white/10 w-full flex flex-col items-center space-y-4">
             <a
@@ -71,7 +68,7 @@ export function Sidebar() {
               className="text-neutral-400 hover:text-white transition-colors"
               title="Help"
             >
-              <span style={{ fontFamily: "Material Symbols Outlined" }}>
+              <span className="font-icon">
                 help_outline
               </span>
             </a>
@@ -80,7 +77,7 @@ export function Sidebar() {
               className="text-neutral-400 hover:text-white transition-colors pb-4"
               title="Logout"
             >
-              <span style={{ fontFamily: "Material Symbols Outlined" }}>
+              <span className="font-icon">
                 logout
               </span>
             </a>

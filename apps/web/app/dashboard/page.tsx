@@ -95,10 +95,7 @@ export default async function DashboardPage() {
 
           {/* Empty state */}
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <span
-              className="text-4xl text-[#c4c7c7] mb-3"
-              style={{ fontFamily: "Material Symbols Outlined" }}
-            >
+            <span className="text-4xl text-[#c4c7c7] mb-3 font-icon">
               inventory_2
             </span>
             <p className="text-sm font-medium text-[#444748]">
@@ -136,10 +133,7 @@ export default async function DashboardPage() {
             ].map((item, i) => (
               <div key={i} className="relative flex gap-4">
                 <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center z-10 shadow-sm">
-                  <span
-                    className="text-xs text-[#151c27]"
-                    style={{ fontFamily: "Material Symbols Outlined" }}
-                  >
+                  <span className="text-xs text-[#151c27] font-icon">
                     {item.icon}
                   </span>
                 </div>

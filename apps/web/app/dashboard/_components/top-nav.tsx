@@ -44,10 +44,7 @@ export function TopNav() {
         <div className="flex items-center gap-4">
           {/* Search */}
           <div className="relative hidden md:block">
-            <span
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-lg"
-              style={{ fontFamily: "Material Symbols Outlined" }}
-            >
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-lg font-icon">
               search
             </span>
             <input
@@ -59,7 +56,7 @@ export function TopNav() {
 
           {/* Notifications */}
           <button className="w-10 h-10 flex items-center justify-center text-neutral-500 hover:bg-neutral-100 rounded-full transition-colors relative">
-            <span style={{ fontFamily: "Material Symbols Outlined" }}>
+            <span className="font-icon">
               notifications
             </span>
             <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-600 rounded-full" />

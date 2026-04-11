@@ -18,11 +18,8 @@ export function MetricCard({
       <div className="p-8 bg-white rounded-xl border border-black/5 shadow-[0px_24px_48px_rgba(21,28,39,0.06)]">
         <div className="mb-4">
           <span
-            className="text-3xl text-[#151c27]"
-            style={{
-              fontFamily: "Material Symbols Outlined",
-              fontVariationSettings: "'FILL' 1",
-            }}
+            className="text-3xl text-[#151c27] font-icon"
+            style={{ fontVariationSettings: "'FILL' 1" }}
           >
             {icon}
           </span>
