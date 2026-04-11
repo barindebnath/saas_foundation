@@ -1,18 +1,20 @@
-import { Sidebar } from "./_components/sidebar";
-import { TopNav } from "./_components/top-nav";
+import { Sidebar } from "../../components/sidebar"
+import { TopNav } from "../../components/top-nav"
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-[#f9f9ff]">
+    <div className="min-h-screen bg-[#f9f9ff] flex text-[#151c27] font-sans selection:bg-[#1c1b1b] selection:text-white">
       <Sidebar />
-      <div className="ml-20 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col pl-20 min-h-screen">
         <TopNav />
-        {children}
+        <main className="flex-1 flex flex-col p-8 pb-16 overflow-x-hidden">
+          {children}
+        </main>
       </div>
     </div>
-  );
+  )
 }

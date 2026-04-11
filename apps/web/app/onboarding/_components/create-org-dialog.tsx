@@ -1,7 +1,7 @@
 "use client"
 
 import { CreateOrganization } from "@clerk/nextjs"
-import { Dialog, DialogContent, DialogTrigger } from "../../../components/ui/dialog"
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "../../../components/ui/dialog"
 import { PlusCircle } from "lucide-react"
 
 export function CreateOrgDialog() {
@@ -17,6 +17,12 @@ export function CreateOrgDialog() {
         </button>
       </DialogTrigger>
       <DialogContent className="max-w-[440px] p-0 border-none bg-transparent shadow-none [&>button]:hidden flex justify-center overflow-visible">
+        {/* Accessibility titles for Radix */}
+        <DialogTitle className="sr-only">Create Organization</DialogTitle>
+        <DialogDescription className="sr-only">
+          Fill in the details below to create a new organization.
+        </DialogDescription>
+        
         {/* We use hiding on the default close button because the Clerk component has its own header */}
         <div className="bg-white rounded-xl shadow-xl overflow-hidden w-full">
           <CreateOrganization routing="hash" />
