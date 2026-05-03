@@ -66,9 +66,9 @@ const config: Config = {
       },
       fontFamily: {
         icon: ["Material Symbols Outlined"],
-        headline: ["var(--font-dm-sans)"],
-        body: ["var(--font-dm-sans)"],
-        label: ["var(--font-dm-sans)"],
+        headline: ["var(--font-manrope)", "sans-serif"],
+        body: ["var(--font-dm-sans)", "sans-serif"],
+        label: ["var(--font-dm-sans)", "sans-serif"],
         sans: ["var(--font-dm-sans)", "sans-serif"]
       },
     },

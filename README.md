@@ -16,7 +16,7 @@ A production-grade, multi-tenant B2B SaaS starter built with the modern TypeScri
 | **Database**  | PostgreSQL on Neon (serverless) | Branching, autoscaling, zero cold-start HTTP driver       |
 | **ORM**       | Drizzle ORM                     | TypeScript-native, no codegen, edge-compatible            |
 | **Auth**      | Clerk                           | Organization switching, RBAC, webhook-synced memberships  |
-| **Billing**   | Stripe (Checkout + Webhooks)    | Per-org subscriptions, decoupled billing state            |
+| **Billing**   | Lemon Squeezy (Checkout + Webhooks) | Per-org subscriptions, decoupled billing state            |
 | **UI**        | Tailwind CSS + shadcn/ui        | Accessible components, zero runtime overhead              |
 
 ---
@@ -28,7 +28,7 @@ This project uses **Logical Isolation**: every row of tenant-scoped data carries
 ```
 organizations ──┐
                  ├── memberships (user ↔ org, with role)
-                 ├── subscriptions (Stripe state, 1:1 per org)
+                 ├── subscriptions (Lemon Squeezy state, 1:1 per org)
                  └── projects (example scoped resource)
 ```
 
@@ -45,7 +45,7 @@ organizations ──┐
 
 - **RBAC** enforced at the database level via `pgEnum` (`owner` | `admin` | `member`) and a unique constraint on `(organization_id, user_id)`
 - **CSRF** protection via Clerk's session tokens + SameSite cookies
-- **Webhook verification** — Stripe and Clerk webhooks validated with HMAC signatures before processing
+- **Webhook verification** — Lemon Squeezy and Clerk webhooks validated with HMAC signatures before processing
 - **Environment isolation** — secrets never committed; `.env.example` documents required variables
 - **Timestamps with timezone** — all `timestamp` columns use `withTimezone: true` to prevent silent timezone bugs
 
@@ -78,7 +78,7 @@ organizations ──┐
 - pnpm ≥ 9
 - A [Neon](https://neon.tech) database (free tier works)
 - A [Clerk](https://clerk.com) application
-- A [Stripe](https://stripe.com) account (test mode)
+- A [LemonSqueezy](https://app.lemonsqueezy.com) account (test mode)
 
 ### Setup
 
@@ -88,7 +88,7 @@ pnpm install
 
 # 2. Configure environment
 cp .env.example .env
-# Fill in DATABASE_URL, Clerk keys, Stripe keys
+# Fill in DATABASE_URL, Clerk keys, LemonSqueezy keys
 
 # 3. Push schema to Neon (rapid prototyping)
 pnpm --filter @repo/db db:push
@@ -112,12 +112,13 @@ pnpm --filter @repo/db db:studio     # Open Drizzle Studio GUI
 
 - [x] Turborepo monorepo scaffold
 - [x] Drizzle + Neon multi-tenant schema
-- [ ] Clerk auth integration with org switching
-- [ ] Clerk → DB membership sync via webhooks
-- [ ] Stripe Checkout + subscription webhooks
-- [ ] Dashboard with org-scoped data
-- [ ] RBAC middleware (owner/admin/member gates)
-- [ ] Landing page with pricing table
+- [x] Clerk auth integration with org switching
+- [x] Clerk → DB membership sync via webhooks
+- [x] Lemon Squeezy Checkout + subscription webhooks
+- [x] Dashboard with org-scoped data
+- [x] RBAC middleware (owner/admin/member gates)
+- [x] Landing page with pricing table
+- [x] Architectural Minimalist UI (No-Line Rule)
 - [ ] E2E tests with Playwright
 
 ---

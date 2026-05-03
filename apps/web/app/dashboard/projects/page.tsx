@@ -25,8 +25,8 @@ export default async function ProjectsPage() {
       {/* Page header row */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-bold tracking-tight text-[#1c1b1b]">Projects</h1>
-          <span className="text-[15px] font-medium text-[#747878]">All projects for this organization</span>
+          <h1 className="text-4xl font-bold tracking-tight text-[#1c1b1b] font-headline">Projects</h1>
+          <span className="text-[15px] font-medium text-[#747878] font-label uppercase tracking-widest text-xs">All projects for this organization</span>
         </div>
         <div>
           <CreateProjectDialog />

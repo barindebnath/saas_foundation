@@ -1,5 +1,7 @@
+import { LucideIcon } from "lucide-react";
+
 interface MetricCardProps {
-  icon: string;
+  icon: LucideIcon;
   label: string;
   value: string;
   sub?: string;
@@ -7,35 +9,30 @@ interface MetricCardProps {
 }
 
 export function MetricCard({
-  icon,
+  icon: Icon,
   label,
   value,
   sub,
-  subClassName = "text-[#444748]",
+  subClassName = "text-[#747878]",
 }: MetricCardProps) {
   return (
-    <>
-      <div className="p-8 bg-white rounded-xl border border-black/5 shadow-[0px_24px_48px_rgba(21,28,39,0.06)]">
-        <div className="mb-4">
-          <span
-            className="text-3xl text-[#151c27] font-icon"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            {icon}
-          </span>
-        </div>
-        <p className="text-xs font-bold uppercase tracking-widest text-[#444748]">
+    <div className="p-8 bg-white rounded-2xl flex flex-col gap-6 transition-all hover:bg-[#f9f9ff] group">
+      <div className="w-12 h-12 rounded-xl bg-[#f2f3fb] flex items-center justify-center text-[#1c1b1b] group-hover:bg-[#1c1b1b] group-hover:text-white transition-all">
+        <Icon className="w-6 h-6" strokeWidth={2.5} />
+      </div>
+      <div className="flex flex-col gap-1">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[#747878] font-label">
           {label}
         </p>
-        <h3 className="text-3xl font-black tracking-tighter text-[#151c27] mt-2">
+        <h3 className="text-4xl font-bold tracking-tight text-[#1c1b1b] font-headline">
           {value}
         </h3>
         {sub && (
-          <p className={`text-xs font-bold mt-2 flex items-center gap-1 ${subClassName}`}>
+          <p className={`text-[13px] font-medium mt-1 flex items-center gap-1 ${subClassName}`}>
             {sub}
           </p>
         )}
       </div>
-    </>
+    </div>
   );
 }

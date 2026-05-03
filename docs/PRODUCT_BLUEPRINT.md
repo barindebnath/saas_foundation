@@ -15,7 +15,7 @@
 | Database | PostgreSQL on Neon (serverless) |
 | ORM | Drizzle ORM |
 | Auth | Clerk (organizations + RBAC) |
-| Billing | Stripe (Checkout + Customer Portal + Webhooks) |
+| Billing | Lemon Squeezy (Checkout + Customer Portal + Webhooks) |
 | UI | Tailwind CSS + shadcn/ui |
 | Deployment | Vercel |
 
@@ -26,7 +26,7 @@
 ```
 organizations        — Clerk org ID (text PK), name, slug, timestamps
 memberships          — UUID PK, organizationId → organizations.id, userId (Clerk), role enum(owner|admin|member), unique(orgId+userId)
-subscriptions        — UUID PK, organizationId (unique), stripeCustomerId, stripeSubscriptionId, status enum(active|trialing|past_due|canceled|unpaid), planId, currentPeriodEnd
+subscriptions        — UUID PK, organizationId (unique), customerId, subscriptionId, status enum(active|trialing|past_due|canceled|unpaid), planId, currentPeriodEnd
 projects             — UUID PK, organizationId → organizations.id, name, timestamps
 ```
 
@@ -47,7 +47,7 @@ projects             — UUID PK, organizationId → organizations.id, name, tim
 /dashboard/[org-slug]/team (protected, org scoped)
 /dashboard/[org-slug]/billing (protected, org scoped)
 /api/webhooks/clerk (public endpoint, HMAC verified)
-/api/webhooks/stripe (public endpoint, HMAC verified)
+/api/webhooks/lemonsqueezy (public endpoint, HMAC verified)
 ```
 
 ---
@@ -76,7 +76,7 @@ projects             — UUID PK, organizationId → organizations.id, name, tim
 - Features to highlight:
   1. Multi-tenant organizations (org isolation)
   2. Role-based access control (owner / admin / member)
-  3. Stripe billing per organization
+  3. Lemon Squeezy billing per organization
   4. Real-time activity feed per tenant
   5. Webhook-synced membership
   6. Edge-compatible Drizzle + Neon
@@ -84,7 +84,7 @@ projects             — UUID PK, organizationId → organizations.id, name, tim
 #### Pricing Table
 - 3 tiers: Free / Pro / Enterprise
 - Free: 1 org, 3 projects, community support
-- Pro: Unlimited orgs, unlimited projects, priority support — links to Stripe Checkout
+- Pro: Unlimited orgs, unlimited projects, priority support — links to Lemon Squeezy Checkout
 - Enterprise: Custom pricing, custom contracts — "Contact us" CTA
 - Each tier: feature checklist, CTA button
 - Active plan highlighted
@@ -95,7 +95,7 @@ projects             — UUID PK, organizationId → organizations.id, name, tim
 
 ### Data
 - No DB queries. Static page.
-- Stripe: Price IDs referenced in CTA links for Checkout redirect
+- Lemon Squeezy: Variant IDs referenced in CTA links for Checkout redirect
 
 ---
 
@@ -258,7 +258,7 @@ const canInvite = has({ permission: "org:member:invite" })
 ## Page 6 — Billing & Subscription (Tenant Scoped)
 
 **Route:** `/dashboard/[org-slug]/billing`
-**Purpose:** Display current plan and allow management via Stripe Customer Portal.
+**Purpose:** Display current plan and allow management via Lemon Squeezy Customer Portal.
 
 ### UI Components
 
@@ -267,14 +267,12 @@ const canInvite = has({ permission: "org:member:invite" })
 - Status badges: Active (green), Trialing (blue), Past Due (red), Canceled (gray)
 
 #### Manage Billing Button
-- Calls `/api/billing/portal` → server creates Stripe Customer Portal session → redirects user
+- Calls `/api/billing/portal` → server fetches LS Subscription → returns `urls.customer_portal` → redirects user
 - Server action:
 ```typescript
-const session = await stripe.billingPortal.sessions.create({
-  customer: subscription.stripeCustomerId,
-  return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/${orgSlug}/billing`,
-})
-redirect(session.url)
+const sub = await getSubscription(id)
+const portalUrl = sub.data.attributes.urls.customer_portal
+redirect(portalUrl)
 ```
 
 #### Usage Progress
@@ -285,15 +283,15 @@ redirect(session.url)
 
 #### Upgrade CTA (if on Free plan)
 - Card with Pro plan features list
-- "Upgrade to Pro" button → Stripe Checkout session
-- Server action creates Checkout session with `client_reference_id: orgId`
+- "Upgrade to Pro" button → Lemon Squeezy Checkout session
+- Server action creates Checkout with `custom_data.org_id: orgId`
 
-### Stripe Webhook Events Handled
+### Lemon Squeezy Webhook Events Handled
 ```
-checkout.session.completed       → create subscription record
-customer.subscription.updated   → update status, planId, currentPeriodEnd
-customer.subscription.deleted   → mark as canceled
-invoice.payment_failed          → mark as past_due
+subscription_created   → create subscription record
+subscription_updated   → update status, planId, currentPeriodEnd
+subscription_cancelled → mark as canceled
+subscription_expired   → mark as canceled
 ```
 
 ### Data
@@ -313,10 +311,10 @@ Events: `organization.created/updated/deleted`, `organizationMembership.created/
 Verification: Svix HMAC (`CLERK_WEBHOOK_SECRET`)
 Already implemented ✓
 
-### `/api/webhooks/stripe`
-Events: `checkout.session.completed`, `customer.subscription.updated/deleted`, `invoice.payment_failed`
-Verification: `stripe.webhooks.constructEvent()` with `STRIPE_WEBHOOK_SECRET`
-Status: Not yet implemented
+### `/api/webhooks/lemonsqueezy`
+Events: `subscription_created`, `subscription_updated/cancelled/expired`
+Verification: HMAC SHA256 (`LEMONSQUEEZY_WEBHOOK_SECRET`)
+Status: Implemented ✓
 
 ---
 
@@ -361,19 +359,22 @@ Phase 1 (Done ✓)
   ✓ Webhook handler (Clerk → DB sync)
   ✓ Deployed to Vercel
 
-Phase 2 (Next)
-  → Install shadcn/ui
-  → Dashboard UI (metric cards, activity feed)
-  → Project Management page (CRUD + optimistic UI)
+Phase 2 (Done ✓)
+  ✓ Install shadcn/ui
+  ✓ Dashboard UI (metric cards, activity feed - hardcoded)
+  ✓ Project Management page (CRUD + optimistic UI)
+  ✓ Team Management page (RBAC UI)
+  ✓ Billing page (Stripe Customer Portal)
 
-Phase 3
-  → Team Management page (RBAC UI)
-  → Billing page (Stripe Customer Portal)
-  → Stripe webhooks
+Phase 3 (In Progress [/])
+  → Database schema updates (activity_logs, project progress)
+  → Stripe webhook implementation (syncing billing status)
+  → Real-time activity feed (replacing hardcoded data)
+  → Design system alignment (No-Line rule, Manrope font)
 
 Phase 4
-  → Landing page (split-screen hero, pricing table)
-  → Onboarding flow (/onboarding gatekeeper)
+  → Landing page refinement
+  → Onboarding flow gatekeeper (middleware implemented ✓)
   → E2E tests with Playwright
 ```
 

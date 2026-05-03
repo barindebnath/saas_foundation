@@ -48,19 +48,20 @@ export default async function TeamPage() {
   )
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-6xl mx-auto">
+    <div className="flex flex-col gap-10 w-full max-w-6xl mx-auto py-4">
       {/* Page header */}
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-bold tracking-tight text-[#1c1b1b]">Team</h1>
-          <span className="text-[15px] font-medium text-[#747878]">
-            Manage members and roles for your organization
+          <span className="text-[10px] font-bold text-[#747878] uppercase tracking-widest font-label">Governance</span>
+          <h1 className="text-5xl font-bold tracking-tighter text-[#1c1b1b] font-headline">Team</h1>
+          <span className="text-[15px] font-medium text-[#747878] mt-1">
+            Manage members and role permissions for your workspace
           </span>
         </div>
         {canInvite && (
-          <div className="flex flex-col items-end gap-1">
+          <div className="flex flex-col items-end gap-2">
             <InviteDialog />
-            <span className="text-[11px] text-[#747878]">Owners and Admins only</span>
+            <span className="text-[11px] font-bold text-[#747878] uppercase tracking-wider">Authorized Admins Only</span>
           </div>
         )}
       </div>
@@ -68,19 +69,23 @@ export default async function TeamPage() {
       {/* Members table */}
       <MembersTable members={enrichedMembers} canManage={canInvite ?? false} />
 
-      {/* Role Permissions reference card */}
-      <div className="bg-[#f0f3ff] rounded-xl border border-[#c4c7c7]/20 p-8">
-        <h3 className="text-xs font-bold text-[#747878] tracking-widest uppercase mb-6">
-          Role Permissions
-        </h3>
+      {/* Role Permissions reference card - No lines, tonal layering */}
+      <div className="bg-white rounded-2xl p-10 flex flex-col gap-8">
+        <div className="flex flex-col gap-1">
+          <h3 className="text-2xl font-bold text-[#1c1b1b] font-headline">
+            Role Matrix
+          </h3>
+          <p className="text-[15px] text-[#747878]">Global permission set for each organizational role</p>
+        </div>
+        
         <div className="overflow-x-auto">
           <table className="w-full text-[15px]">
             <thead>
-              <tr className="border-b border-[#c4c7c7]/30">
-                <th className="text-left pb-3 font-bold text-[#1c1b1b]">Action</th>
-                <th className="text-center pb-3 font-bold text-[#1c1b1b] w-28">Owner</th>
-                <th className="text-center pb-3 font-bold text-[#1c1b1b] w-28">Admin</th>
-                <th className="text-center pb-3 font-bold text-[#1c1b1b] w-28">Member</th>
+              <tr className="border-none">
+                <th className="text-left pb-6 font-bold text-[#747878] uppercase text-[10px] tracking-widest font-label">Functional Area</th>
+                <th className="text-center pb-6 font-bold text-[#1c1b1b] w-32 uppercase text-[10px] tracking-widest font-label bg-[#f9f9ff] rounded-t-xl">Owner</th>
+                <th className="text-center pb-6 font-bold text-[#1c1b1b] w-32 uppercase text-[10px] tracking-widest font-label">Admin</th>
+                <th className="text-center pb-6 font-bold text-[#1c1b1b] w-32 uppercase text-[10px] tracking-widest font-label">Member</th>
               </tr>
             </thead>
             <tbody className="text-[#151c27]">
@@ -90,28 +95,28 @@ export default async function TeamPage() {
                 { action: "Change roles", owner: true, admin: false, member: false },
                 { action: "View team", owner: true, admin: true, member: true },
                 { action: "Manage billing", owner: true, admin: false, member: false },
-              ].map((row) => (
-                <tr key={row.action} className="border-b border-[#c4c7c7]/20 last:border-0">
-                  <td className="py-3 font-medium">{row.action}</td>
-                  <td className="py-3 text-center">
+              ].map((row, idx) => (
+                <tr key={row.action} className="border-none group">
+                  <td className="py-4 font-bold font-headline">{row.action}</td>
+                  <td className="py-4 text-center bg-[#f9f9ff] group-last:rounded-b-xl">
                     {row.owner ? (
-                      <Check className="w-4 h-4 text-emerald-600 mx-auto" />
+                      <Check className="w-5 h-5 text-[#1c1b1b] mx-auto" strokeWidth={3} />
                     ) : (
-                      <X className="w-4 h-4 text-[#c4c7c7] mx-auto" />
+                      <X className="w-5 h-5 text-[#c4c7c7] mx-auto" />
                     )}
                   </td>
-                  <td className="py-3 text-center">
+                  <td className="py-4 text-center">
                     {row.admin ? (
-                      <Check className="w-4 h-4 text-emerald-600 mx-auto" />
+                      <Check className="w-5 h-5 text-[#1c1b1b] mx-auto" strokeWidth={3} />
                     ) : (
-                      <X className="w-4 h-4 text-[#c4c7c7] mx-auto" />
+                      <X className="w-5 h-5 text-[#c4c7c7] mx-auto" />
                     )}
                   </td>
-                  <td className="py-3 text-center">
+                  <td className="py-4 text-center">
                     {row.member ? (
-                      <Check className="w-4 h-4 text-emerald-600 mx-auto" />
+                      <Check className="w-5 h-5 text-[#1c1b1b] mx-auto" strokeWidth={3} />
                     ) : (
-                      <X className="w-4 h-4 text-[#c4c7c7] mx-auto" />
+                      <X className="w-5 h-5 text-[#c4c7c7] mx-auto" />
                     )}
                   </td>
                 </tr>

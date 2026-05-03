@@ -2,88 +2,79 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LayoutDashboard, BarChart3, Users, Folders, Settings, Plus, HelpCircle, LogOut, Square } from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard", icon: "dashboard", label: "Dash" },
-  { href: "/dashboard/stats", icon: "monitoring", label: "Stats" },
-  { href: "/dashboard/team", icon: "group", label: "Team" },
-  { href: "/dashboard/projects", icon: "inventory_2", label: "Works" },
-  { href: "/dashboard/settings", icon: "settings", label: "Setup" },
+  { href: "/dashboard", icon: LayoutDashboard, label: "Dash" },
+  { href: "/dashboard/stats", icon: BarChart3, label: "Stats" },
+  { href: "/dashboard/team", icon: Users, label: "Team" },
+  { href: "/dashboard/projects", icon: Folders, label: "Works" },
+  { href: "/dashboard/settings", icon: Settings, label: "Setup" },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <>
-      <aside className="bg-[#1c1b1b] h-screen w-20 fixed left-0 top-0 flex flex-col py-6 z-50">
-        {/* Logo */}
-        <div className="mb-10 flex flex-col items-center">
-          <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center">
-            <span
-              className="text-[#1c1b1b] text-xl font-icon"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              token
-            </span>
-          </div>
+    <aside className="bg-[#f2f3fb] h-screen w-20 fixed left-0 top-0 flex flex-col py-8 z-50">
+      {/* Logo */}
+      <div className="mb-12 flex flex-col items-center">
+        <div className="w-10 h-10 rounded-lg bg-[#1c1b1b] flex items-center justify-center shadow-sm">
+          <Square className="w-6 h-6 text-white" strokeWidth={3} />
         </div>
+      </div>
 
-        {/* Nav */}
-        <nav className="flex-1 flex flex-col items-center space-y-1">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex flex-col items-center justify-center gap-1 w-full py-3 transition-all ${
-                  isActive
-                    ? "border-l-4 border-[#e5e2e1] bg-[#474646] text-white"
-                    : "text-neutral-400 hover:text-white hover:bg-[#474646]/50 border-l-4 border-transparent"
-                }`}
-              >
-                <span className="font-icon">
-                  {item.icon}
-                </span>
-                <span className="text-[10px] uppercase font-bold tracking-tighter">
-                  {item.label}
-                </span>
-              </Link>
-            );
-          })}
-        </nav>
+      {/* Nav */}
+      <nav className="flex-1 flex flex-col items-center space-y-2">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex flex-col items-center justify-center gap-1.5 w-full py-4 transition-all relative ${
+                isActive
+                  ? "text-[#1c1b1b]"
+                  : "text-[#747878] hover:text-[#1c1b1b]"
+              }`}
+            >
+              {isActive && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#1c1b1b] rounded-r-full" />
+              )}
+              <item.icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />
+              <span className="text-[10px] uppercase font-bold tracking-widest font-label">
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
+      </nav>
 
-        {/* Bottom actions */}
-        <div className="mt-auto flex flex-col items-center space-y-6">
-          <button
-            className="w-12 h-12 bg-white text-[#1c1b1b] rounded-full flex items-center justify-center hover:bg-neutral-100 transition-colors shadow-lg"
-            title="Invite Member"
+      {/* Bottom actions */}
+      <div className="mt-auto flex flex-col items-center space-y-8">
+        <button
+          className="w-12 h-12 bg-[#1c1b1b] text-white rounded-2xl flex items-center justify-center hover:scale-105 transition-all shadow-md active:scale-95"
+          title="New Action"
+        >
+          <Plus className="w-6 h-6" strokeWidth={3} />
+        </button>
+        <div className="flex flex-col items-center space-y-6 pb-4">
+          <a
+            href="#"
+            className="text-[#747878] hover:text-[#1c1b1b] transition-colors"
+            title="Help"
           >
-            <span className="font-icon">add</span>
-          </button>
-          <div className="pt-4 border-t border-white/10 w-full flex flex-col items-center space-y-4">
-            <a
-              href="#"
-              className="text-neutral-400 hover:text-white transition-colors"
-              title="Help"
-            >
-              <span className="font-icon">
-                help_outline
-              </span>
-            </a>
-            <a
-              href="/sign-out"
-              className="text-neutral-400 hover:text-white transition-colors pb-4"
-              title="Logout"
-            >
-              <span className="font-icon">
-                logout
-              </span>
-            </a>
-          </div>
+            <HelpCircle className="w-5 h-5" />
+          </a>
+          <a
+            href="/sign-out"
+            className="text-[#747878] hover:text-[#1c1b1b] transition-colors"
+            title="Logout"
+          >
+            <LogOut className="w-5 h-5" />
+          </a>
         </div>
-      </aside>
-    </>
+      </div>
+    </aside>
   );
 }

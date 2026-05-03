@@ -69,7 +69,7 @@ export const memberships = pgTable(
 
 // ─── Subscriptions ─────────────────────────────────────────────────────────────
 // Separate from organizations intentionally — billing state changes frequently
-// and is driven by Stripe webhooks, not user actions.
+// and is driven by billing provider webhooks (e.g. Lemon Squeezy).
 
 export const subscriptions = pgTable("subscriptions", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -77,10 +77,10 @@ export const subscriptions = pgTable("subscriptions", {
     .references(() => organizations.id, { onDelete: "cascade" })
     .notNull()
     .unique(), // One active subscription per org
-  stripeCustomerId: text("stripe_customer_id").unique().notNull(),
-  stripeSubscriptionId: text("stripe_subscription_id").unique(),
+  customerId: text("customer_id").unique(), // Provider-specific customer ID
+  subscriptionId: text("subscription_id").unique(), // Provider-specific sub ID
   status: subscriptionStatusEnum("status").notNull().default("trialing"),
-  planId: text("plan_id"), // Internal plan identifier
+  planId: text("plan_id"), // Internal plan identifier (variant ID in LS)
   currentPeriodEnd: timestamp("current_period_end", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
@@ -98,10 +98,26 @@ export const projects = pgTable("projects", {
     .references(() => organizations.id, { onDelete: "cascade" })
     .notNull(),
   name: text("name").notNull(),
+  progress: text("progress").default("0").notNull(), // percentage 0-100 as string or int, keeping it simple
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// ─── Activity Logs ─────────────────────────────────────────────────────────────
+
+export const activityLogs = pgTable("activity_logs", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: text("organization_id")
+    .references(() => organizations.id, { onDelete: "cascade" })
+    .notNull(),
+  type: text("type").notNull(), // e.g. 'project_created'
+  message: text("message").notNull(),
+  metadata: text("metadata"), // Stringified JSON or just text
+  createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
 });

@@ -1,22 +1,44 @@
-import { auth } from "@clerk/nextjs/server"
-import { NextResponse } from "next/server"
-import Stripe from "stripe"
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2026-03-25.dahlia",
-})
+import { auth } from "@clerk/nextjs/server";
+import { createCheckout } from "@lemonsqueezy/lemonsqueezy.js";
+import { NextResponse } from "next/server";
+import { setupLS, LS_CONFIG } from "@/lib/lemonsqueezy";
 
 export async function POST() {
-  const { orgId } = await auth()
-  if (!orgId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const { userId, orgId } = await auth();
+  if (!userId || !orgId) {
+    return new Response("Unauthorized", { status: 401 });
+  }
 
-  const session = await stripe.checkout.sessions.create({
-    mode: "subscription",
-    line_items: [{ price: process.env.STRIPE_PRO_PRICE_ID!, quantity: 1 }],
-    client_reference_id: orgId,
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing?upgraded=true`,
-    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing`,
-  })
+  setupLS();
 
-  return NextResponse.json({ url: session.url })
+  const storeId = process.env.LEMONSQUEEZY_STORE_ID;
+  const variantId = LS_CONFIG.plans.pro;
+
+  if (!storeId || variantId === "placeholder_pro_variant") {
+    console.error("Lemon Squeezy Store ID or Variant ID not configured");
+    return NextResponse.json({ error: "Billing not configured" }, { status: 500 });
+  }
+
+  try {
+    const { data, error } = await createCheckout(storeId, variantId, {
+      checkoutData: {
+        custom: {
+          org_id: orgId,
+          user_id: userId,
+        },
+      },
+      productOptions: {
+        redirectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing`,
+      },
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    return NextResponse.json({ url: data?.data.attributes.url });
+  } catch (err) {
+    console.error("[LS Checkout Error]", err);
+    return NextResponse.json({ error: "Failed to create checkout" }, { status: 500 });
+  }
 }

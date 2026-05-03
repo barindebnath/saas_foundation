@@ -24,128 +24,140 @@ export default async function BillingPage() {
   const usagePercent = planLimit === Infinity ? 0 : Math.min((projectCount / planLimit) * 100, 100)
   const status = subscription?.status ?? "trialing"
   const planName = subscription?.planId ?? "Free"
-  const hasStripeCustomer = !!subscription?.stripeCustomerId
+  const hasSubscription = !!subscription?.subscriptionId
 
   const trialEnd = new Date()
   trialEnd.setDate(trialEnd.getDate() + 30)
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-6xl mx-auto">
+    <div className="flex flex-col gap-10 w-full max-w-6xl mx-auto py-4">
       {/* Page heading */}
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold tracking-tight text-[#1c1b1b]">Billing</h1>
-        <span className="text-[15px] font-medium text-[#747878]">
-          Manage your subscription and usage for your organization
+        <span className="text-[10px] font-bold text-[#747878] uppercase tracking-widest font-label">Financials</span>
+        <h1 className="text-5xl font-bold tracking-tighter text-[#1c1b1b] font-headline">Billing</h1>
+        <span className="text-[15px] font-medium text-[#747878] mt-1">
+          Manage your subscription, invoices, and organization usage
         </span>
       </div>
 
-      {/* Card 1 — Current Plan */}
-      <div className="bg-white rounded-xl border border-[#c4c7c7]/30 shadow-sm p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex flex-col gap-2">
-          <span className="text-xs font-bold text-[#747878] tracking-widest uppercase">
-            Current Plan
-          </span>
-          <div className="flex items-center gap-3">
-            <span className="text-3xl font-bold text-[#1c1b1b] capitalize">{planName}</span>
-            <Badge
-              variant={status === "active" ? "success" : "secondary"}
-              className="capitalize"
-            >
-              {status}
-            </Badge>
-          </div>
-          <span className="text-[13px] text-[#747878]">
-            {status === "trialing"
-              ? `Your trial ends on ${trialEnd.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}`
-              : status === "active"
-                ? "Your subscription is active"
-                : `Status: ${status}`}
-          </span>
-        </div>
-        <div className="flex flex-col items-end gap-1 shrink-0">
-          {hasStripeCustomer && <ManageBillingButton />}
-          {hasStripeCustomer && (
-            <span className="text-[11px] text-[#747878]">
-              Update payment method, download invoices
+      <div className="grid lg:grid-cols-2 gap-8">
+        {/* Card 1 — Current Plan */}
+        <div className="bg-white rounded-2xl p-10 flex flex-col justify-between gap-8">
+          <div className="flex flex-col gap-4">
+            <span className="text-[10px] font-bold text-[#747878] tracking-widest uppercase font-label">
+              Active Plan
             </span>
-          )}
-        </div>
-      </div>
-
-      {/* Card 2 — Usage */}
-      <div className="bg-white rounded-xl border border-[#c4c7c7]/30 shadow-sm p-8 flex flex-col gap-6">
-        <h3 className="font-bold text-lg text-[#1c1b1b]">Usage This Period</h3>
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between text-[15px]">
-            <span className="font-medium text-[#1c1b1b]">Projects</span>
-            <span className="text-[#747878] font-medium">
-              {projectCount} of {planLimit === Infinity ? "∞" : planLimit} used
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="flex-1 h-2.5 rounded-full bg-[#e2e8f8] overflow-hidden">
-              <div
-                className="h-full rounded-full bg-[#1c1b1b] transition-all duration-500"
-                style={{ width: `${usagePercent}%` }}
-              />
+            <div className="flex items-center gap-4">
+              <span className="text-5xl font-bold text-[#1c1b1b] capitalize font-headline">{planName}</span>
+              <Badge
+                variant={status === "active" ? "success" : "secondary"}
+                className="capitalize px-3 py-1 rounded-lg text-xs font-bold"
+              >
+                {status}
+              </Badge>
             </div>
-            <span className="text-sm font-bold text-[#1c1b1b] w-12 text-right">
-              {Math.round(usagePercent)}%
-            </span>
-          </div>
-          {planName.toLowerCase() !== "pro" && (
-            <p className="text-[13px] text-[#747878] mt-1">
-              Upgrade to Pro for unlimited projects{" "}
-              <span className="font-bold text-[#1c1b1b] underline underline-offset-4 cursor-pointer">
-                Upgrade →
-              </span>
+            <p className="text-[15px] text-[#747878] font-medium">
+              {status === "trialing"
+                ? `Your trial period concludes on ${trialEnd.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}`
+                : status === "active"
+                  ? "Your organization is currently on a paid subscription."
+                  : `Current account status: ${status}`}
             </p>
-          )}
+          </div>
+          <div className="flex flex-col gap-4">
+            {hasSubscription && <ManageBillingButton />}
+            {hasSubscription && (
+              <span className="text-[11px] font-bold text-[#747878] uppercase tracking-wider">
+                Managed via Lemon Squeezy Portal
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Card 2 — Usage */}
+        <div className="bg-[#f2f3fb] rounded-2xl p-10 flex flex-col gap-8">
+          <div className="flex flex-col gap-1">
+            <h3 className="font-bold text-2xl text-[#1c1b1b] font-headline">Resource Usage</h3>
+            <p className="text-[15px] text-[#747878]">Capacity utilization for the current billing cycle</p>
+          </div>
+          
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between text-[13px] font-bold uppercase tracking-widest font-label text-[#747878]">
+              <span>Projects Provisioned</span>
+              <span className="text-[#1c1b1b]">
+                {projectCount} / {planLimit === Infinity ? "Unlimited" : planLimit}
+              </span>
+            </div>
+            <div className="flex items-center gap-6">
+              <div className="flex-1 h-3 rounded-full bg-white overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-[#1c1b1b] transition-all duration-700 ease-out"
+                  style={{ width: `${usagePercent}%` }}
+                />
+              </div>
+              <span className="text-lg font-bold text-[#1c1b1b] w-12 text-right font-headline">
+                {Math.round(usagePercent)}%
+              </span>
+            </div>
+            {planName.toLowerCase() !== "pro" && (
+              <p className="text-[13px] text-[#747878] mt-2 font-medium">
+                You are approaching your limit. <span className="font-bold text-[#1c1b1b] underline cursor-pointer">Upgrade to Pro</span> for unlimited scale.
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Card 3 — Upgrade CTA (dark) */}
+      {/* Card 3 — Upgrade CTA (premium dark) */}
       {planName.toLowerCase() !== "pro" && (
-        <div className="bg-[#1c1b1b] rounded-xl p-8 md:p-12 flex flex-col md:flex-row items-start justify-between gap-8 text-white">
-          <div className="flex flex-col gap-6 flex-1">
-            <h3 className="text-2xl font-bold">Unlock everything</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-[15px]">
+        <div className="bg-[#1c1b1b] rounded-3xl p-12 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-12 text-white relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-white/10 transition-all duration-1000"></div>
+          <div className="flex flex-col gap-10 flex-1 relative z-10">
+            <div className="flex flex-col gap-3">
+              <span className="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em] font-label">Premium Expansion</span>
+              <h3 className="text-5xl font-bold font-headline tracking-tighter">Scale without limits.</h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-5 text-[15px]">
               {[
                 "Unlimited organizations",
                 "Unlimited projects",
-                "Stripe billing management",
-                "Priority support",
-                "RBAC permissions",
-                "Webhook integrations",
+                "Advanced team permissions",
+                "Dedicated priority support",
+                "Custom webhook events",
+                "SLA guarantees",
               ].map((feature) => (
-                <div key={feature} className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span className="text-white/90">{feature}</span>
+                <div key={feature} className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
+                    <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                  </div>
+                  <span className="text-white/80 font-medium">{feature}</span>
                 </div>
               ))}
             </div>
           </div>
-          <div className="flex flex-col items-center gap-4 shrink-0 md:min-w-[220px]">
+          <div className="flex flex-col items-center gap-6 shrink-0 lg:min-w-[300px] bg-white/5 p-10 rounded-3xl backdrop-blur-sm relative z-10 border border-white/10">
             <div className="text-center">
-              <span className="text-4xl font-bold">$29</span>
-              <span className="text-lg text-white/60"> / month</span>
+              <span className="text-6xl font-bold font-headline">$29</span>
+              <span className="text-xl text-white/50 font-medium"> / mo</span>
             </div>
-            <span className="text-[13px] text-white/50 text-center">
-              per organization, billed monthly
-            </span>
-            <UpgradeButton />
-            <span className="text-[11px] text-white/40">
-              No commitment. Cancel anytime.
-            </span>
+            <div className="flex flex-col items-center gap-2">
+              <UpgradeButton />
+              <span className="text-[11px] text-white/40 font-bold uppercase tracking-widest mt-2">Billed per workspace</span>
+            </div>
           </div>
         </div>
       )}
 
       {/* Card 4 — Billing History */}
-      <div className="bg-white rounded-xl border border-[#c4c7c7]/30 shadow-sm p-8 flex flex-col gap-4">
-        <h3 className="font-bold text-lg text-[#1c1b1b]">Billing History</h3>
-        <div className="py-12 text-center text-[15px] text-[#747878]">
-          No invoices yet. Your invoices will appear here after your first payment.
+      <div className="bg-white rounded-2xl p-12 flex flex-col gap-6">
+        <h3 className="font-bold text-2xl text-[#1c1b1b] font-headline">Billing History</h3>
+        <div className="py-20 text-center flex flex-col items-center gap-4">
+          <div className="w-16 h-16 rounded-full bg-[#f2f3fb] flex items-center justify-center">
+            <Check className="w-8 h-8 text-[#c4c7c7]" />
+          </div>
+          <p className="text-[15px] text-[#747878] max-w-xs font-medium">
+            Your billing history is currently empty. Invoices will be generated upon your first successful transaction.
+          </p>
         </div>
       </div>
     </div>

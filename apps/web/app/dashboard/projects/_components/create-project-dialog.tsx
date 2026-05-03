@@ -37,43 +37,48 @@ export function CreateProjectDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="h-10 px-5 flex items-center gap-2 rounded-md font-bold shrink-0">
-          <Plus className="w-4 h-4" strokeWidth={2.5} /> New Project
+        <Button className="h-11 px-6 flex items-center gap-2 rounded-xl font-bold shrink-0 bg-[#1c1b1b] text-white hover:bg-[#1c1b1b]/90 shadow-sm transition-all duration-300">
+          <Plus className="w-4 h-4" strokeWidth={3} /> New Project
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[400px]">
+      <DialogContent className="sm:max-w-[440px] rounded-2xl border-none p-8 gap-6 bg-white">
         <DialogHeader>
-          <DialogTitle className="text-xl">New Project</DialogTitle>
+          <DialogTitle className="text-3xl font-bold font-headline text-[#1c1b1b]">New Project</DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6 pt-4">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="name" className="text-[13px] font-bold text-[#1c1b1b] uppercase tracking-wider">
-              Project Name <span className="text-red-500">*</span>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+          <div className="flex flex-col gap-3">
+            <label htmlFor="name" className="text-[10px] font-bold text-[#747878] uppercase tracking-widest font-label">
+              Project Identity
             </label>
             <input
               id="name"
               type="text"
               required
+              autoFocus
               placeholder="e.g. Website Redesign"
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={loading}
-              className="h-11 w-full rounded-md border border-[#c4c7c7]/50 bg-white px-3 text-[15px] outline-none focus:border-[#1c1b1b] focus:ring-1 focus:ring-[#1c1b1b] transition-all"
+              className="h-12 w-full rounded-xl bg-[#f2f3fb] px-4 text-[15px] outline-none border-none placeholder:text-[#747878] text-[#1c1b1b] transition-all focus:ring-2 focus:ring-[#1c1b1b]/5"
             />
-            <p className="text-[13px] text-[#747878] mt-1 font-medium">This project will be scoped to your active organization.</p>
+            <p className="text-[13px] text-[#747878] mt-1 font-medium">Your team will see this project in the shared workspace.</p>
           </div>
           
-          <DialogFooter>
+          <div className="flex items-center justify-end gap-3 pt-2">
             <DialogClose asChild>
-              <Button type="button" variant="outline" disabled={loading} className="font-bold">
+              <button type="button" disabled={loading} className="px-6 py-3 rounded-xl font-bold text-sm text-[#747878] hover:text-[#1c1b1b] transition-colors">
                 Cancel
-              </Button>
+              </button>
             </DialogClose>
-            <Button type="submit" disabled={loading || !name.trim()} className="font-bold">
-              {loading ? "Creating..." : "Create Project"}
-            </Button>
-          </DialogFooter>
+            <button 
+              type="submit" 
+              disabled={loading || !name.trim()} 
+              className="px-6 py-3 rounded-xl font-bold text-sm bg-[#1c1b1b] text-white hover:bg-[#1c1b1b]/90 shadow-md transition-all active:scale-[0.98] disabled:opacity-50"
+            >
+              {loading ? "Creating..." : "Generate Project"}
+            </button>
+          </div>
         </form>
       </DialogContent>
     </Dialog>
