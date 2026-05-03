@@ -19,20 +19,20 @@ export default async function DashboardPage() {
   }
 
   const [memberCountRes, projectCountRes, subscription, logs] = await Promise.all([
-    db.select({ count: count() }).from(memberships).where(eq(memberships.organizationId, orgId)),
-    db.select({ count: count() }).from(projects).where(eq(projects.organizationId, orgId)),
-    db.query.subscriptions.findFirst({ where: eq(subscriptions.organizationId, orgId) }),
+    db.select({ count: count() }).from(memberships).where(eq(memberships.organizationId, orgId)).catch(() => [{ count: 0 }]),
+    db.select({ count: count() }).from(projects).where(eq(projects.organizationId, orgId)).catch(() => [{ count: 0 }]),
+    db.query.subscriptions.findFirst({ where: eq(subscriptions.organizationId, orgId) }).catch(() => null),
     db.query.activityLogs.findMany({
       where: eq(activityLogs.organizationId, orgId),
       orderBy: [desc(activityLogs.createdAt)],
       limit: 5,
-    })
+    }).catch(() => []),
   ])
 
-  const activeMembersCount = memberCountRes[0]?.count ?? 0
-  const projectsCount = projectCountRes[0]?.count ?? 0
-  const subStatus = subscription?.status ?? "Trialing"
-  const planName = subscription?.planId ?? "Free"
+  const activeMembersCount = Number(memberCountRes[0]?.count ?? 0)
+  const projectsCount = Number(projectCountRes[0]?.count ?? 0)
+  const subStatus = subscription?.status ?? "trialing"
+  const planName = subscription?.planId ?? "free"
 
   return (
     <div className="flex flex-col gap-10 w-full max-w-6xl mx-auto py-4">
