@@ -3,8 +3,14 @@ import { db, organizations, memberships, projects, subscriptions, activityLogs }
 import { eq, count, desc } from "drizzle-orm"
 import { Users, Folders, ShieldCheck, Award } from "lucide-react"
 import Link from "next/link"
-import { formatDistanceToNow } from "date-fns"
 import { MetricCard } from "./_components/metric-card"
+
+const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" })
+
+function formatDistanceToNow(date: Date) {
+  const diffDays = Math.round((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+  return rtf.format(diffDays, "day")
+}
 
 export default async function DashboardPage() {
   const { orgId } = await auth()
@@ -94,7 +100,7 @@ export default async function DashboardPage() {
                   <span className="absolute -left-[30px] w-2 h-2 bg-[#1c1b1b] rounded-full top-2"></span>
                   <p className="text-[15px] font-bold text-[#1c1b1b] leading-tight">{log.message}</p>
                   <span className="text-xs text-[#747878] font-medium uppercase tracking-wider">
-                    {formatDistanceToNow(new Date(log.createdAt), { addSuffix: true })}
+                    {formatDistanceToNow(new Date(log.createdAt))}
                   </span>
                 </div>
               )) : (
