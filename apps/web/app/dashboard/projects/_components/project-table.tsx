@@ -3,7 +3,6 @@
 import { useOptimistic, useState } from "react"
 import { Search, Edit, Trash2 } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table"
-import { Badge } from "../../../../components/ui/badge"
 
 interface Project {
   id: string

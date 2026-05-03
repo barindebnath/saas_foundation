@@ -1,8 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
-import { db, organizations, memberships, projects, subscriptions, activityLogs } from "@repo/db"
+import { db, memberships, projects, subscriptions, activityLogs } from "@repo/db"
 import { eq, count, desc } from "drizzle-orm"
 import { Users, Folders, ShieldCheck, Award } from "lucide-react"
-import Link from "next/link"
 import { MetricCard } from "./_components/metric-card"
 
 const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" })
@@ -19,8 +18,7 @@ export default async function DashboardPage() {
     return null
   }
 
-  const [org, memberCountRes, projectCountRes, subscription, logs] = await Promise.all([
-    db.query.organizations.findFirst({ where: eq(organizations.id, orgId) }),
+  const [memberCountRes, projectCountRes, subscription, logs] = await Promise.all([
     db.select({ count: count() }).from(memberships).where(eq(memberships.organizationId, orgId)),
     db.select({ count: count() }).from(projects).where(eq(projects.organizationId, orgId)),
     db.query.subscriptions.findFirst({ where: eq(subscriptions.organizationId, orgId) }),

@@ -4,7 +4,7 @@ export async function logActivity(
   organizationId: string,
   type: string,
   message: string,
-  metadata?: any
+  metadata?: Record<string, unknown>
 ) {
   try {
     await db.insert(activityLogs).values({
