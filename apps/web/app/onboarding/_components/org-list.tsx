@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { CreateOrgDialog } from "./create-org-dialog"
 import { Button } from "../../../components/ui/button"
 import { ArrowRight } from "lucide-react"
+import Image from "next/image"
 
 interface Organization {
   id: string
@@ -32,7 +33,7 @@ export default function OrgList({ organizations }: { organizations: Organization
         
         {organizations.length === 0 ? (
           <p className="text-sm italic text-[#747878] py-4 text-center">
-            You don't belong to any organizations yet.
+            You don&apos;t belong to any organizations yet.
           </p>
         ) : (
           <div className="flex flex-col gap-3">
@@ -40,7 +41,7 @@ export default function OrgList({ organizations }: { organizations: Organization
               <div key={org.id} className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#c4c7c7]/30 shadow-sm transition-shadow hover:shadow-md">
                 <div className="flex items-center gap-4">
                   {org.imageUrl ? (
-                    <img src={org.imageUrl} alt={org.name} className="w-10 h-10 rounded shadow-sm object-cover" />
+                    <Image src={org.imageUrl} alt={org.name} width={40} height={40} className="w-10 h-10 rounded shadow-sm object-cover" />
                   ) : (
                     <div className="w-10 h-10 rounded bg-[#e2e8f8] flex items-center justify-center font-bold text-[#151c27] shadow-sm">
                       {org.name.substring(0, 2).toUpperCase()}

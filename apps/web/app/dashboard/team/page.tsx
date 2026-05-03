@@ -95,7 +95,7 @@ export default async function TeamPage() {
                 { action: "Change roles", owner: true, admin: false, member: false },
                 { action: "View team", owner: true, admin: true, member: true },
                 { action: "Manage billing", owner: true, admin: false, member: false },
-              ].map((row, idx) => (
+              ].map((row) => (
                 <tr key={row.action} className="border-none group">
                   <td className="py-4 font-bold font-headline">{row.action}</td>
                   <td className="py-4 text-center bg-[#f9f9ff] group-last:rounded-b-xl">
