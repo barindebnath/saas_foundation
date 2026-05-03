@@ -1,4 +1,4 @@
-import { crypto } from "crypto";
+import { createHmac } from "crypto";
 import { db, subscriptions } from "@repo/db";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   }
 
   // Verify signature
-  const hmac = crypto.createHmac("sha256", WEBHOOK_SECRET);
+  const hmac = createHmac("sha256", WEBHOOK_SECRET);
   const digest = hmac.update(body).digest("hex");
 
   if (signature !== digest) {
