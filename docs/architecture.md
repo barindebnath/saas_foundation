@@ -43,19 +43,19 @@ This means our DB is the source of truth for **billing** and **app-specific data
 
 ## Billing Architecture
 
-Stripe state is decoupled from the `organizations` table into a dedicated `subscriptions` table.
+Lemon Squeezy state is decoupled from the `organizations` table into a dedicated `subscriptions` table.
 
 **Why?**
 
-- Stripe sends ~15 different webhook event types
+- Lemon Squeezy lifecycle events arrive independently from org/user events
 - Billing state changes independently of org settings
 - Easier to add plan tiers, trials, and grace periods without touching org logic
 
 ### Webhook Events Handled
 
-| Event                           | Action                     |
-| ------------------------------- | -------------------------- |
-| `checkout.session.completed`    | Create subscription record |
-| `customer.subscription.updated` | Update status, period end  |
-| `customer.subscription.deleted` | Mark as canceled           |
-| `invoice.payment_failed`        | Mark as past_due           |
+| Event                      | Action                                      |
+| -------------------------- | ------------------------------------------- |
+| `subscription_created`     | Upsert subscription for `organization_id`   |
+| `subscription_updated`     | Sync status and renewal timestamp           |
+| `subscription_cancelled`   | Mark subscription status as `canceled`      |
+| `subscription_expired`     | Mark subscription status as `canceled`      |

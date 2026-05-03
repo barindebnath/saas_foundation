@@ -10,13 +10,13 @@ A production-grade, multi-tenant B2B SaaS starter built with the modern TypeScri
 
 | Layer         | Technology                      | Why                                                       |
 | ------------- | ------------------------------- | --------------------------------------------------------- |
-| **Framework** | Next.js 15 (App Router)         | RSC, Route Handlers, middleware-level auth                |
+| **Framework** | Next.js 16 (App Router)         | RSC, Route Handlers, middleware-level auth                |
 | **Language**  | TypeScript 5.9 (strict)         | End-to-end type safety, schema-as-types via Drizzle       |
 | **Monorepo**  | Turborepo + pnpm workspaces     | Shared packages (`db`, `ui`, `auth`) with parallel builds |
 | **Database**  | PostgreSQL on Neon (serverless) | Branching, autoscaling, zero cold-start HTTP driver       |
 | **ORM**       | Drizzle ORM                     | TypeScript-native, no codegen, edge-compatible            |
 | **Auth**      | Clerk                           | Organization switching, RBAC, webhook-synced memberships  |
-| **Billing**   | Lemon Squeezy (Checkout + Webhooks) | Per-org subscriptions, decoupled billing state            |
+| **Billing**   | Lemon Squeezy (Checkout + Webhooks) | Per-org subscriptions, webhook-driven billing state       |
 | **UI**        | Tailwind CSS + shadcn/ui        | Accessible components, zero runtime overhead              |
 
 ---
@@ -56,14 +56,14 @@ organizations ──┐
 ```
 /saas-starter
 ├── apps/
-│   └── web/              # Next.js 15 — landing, dashboard, billing
+│   └── web/              # Next.js 16 — landing, dashboard, billing
 ├── packages/
 │   ├── db/               # Drizzle schema, migrations, Neon client
 │   ├── ui/               # Shared Tailwind/shadcn components
 │   ├── eslint-config/    # Shared ESLint rules
 │   └── typescript-config/ # Shared tsconfig bases
 ├── docs/                 # Architecture diagrams, compliance notes
-├── .env.example
+├── .env.example         # Required environment variables
 ├── turbo.json
 └── pnpm-workspace.yaml
 ```
@@ -88,7 +88,7 @@ pnpm install
 
 # 2. Configure environment
 cp .env.example .env
-# Fill in DATABASE_URL, Clerk keys, LemonSqueezy keys
+# Fill in values from .env.example
 
 # 3. Push schema to Neon (rapid prototyping)
 pnpm --filter @repo/db db:push
@@ -96,6 +96,24 @@ pnpm --filter @repo/db db:push
 # 4. Start development
 pnpm dev
 ```
+
+
+### Environment variables
+
+A starter `.env.example` is included with all required keys.
+
+```bash
+cp .env.example .env
+```
+
+At minimum, configure:
+
+- `DATABASE_URL`, `DATABASE_URL_UNPOOLED`
+- `NEXT_PUBLIC_APP_URL`
+- `CLERK_SECRET_KEY`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_WEBHOOK_SECRET`
+- `LEMONSQUEEZY_API_KEY`, `LEMONSQUEEZY_STORE_ID`, `LEMONSQUEEZY_PRO_VARIANT_ID`, `LEMONSQUEEZY_WEBHOOK_SECRET`
+
+If `LEMONSQUEEZY_PRO_VARIANT_ID` is missing, checkout creation is intentionally blocked by the API route to prevent accidental misconfigured purchases.
 
 ### Database Commands
 
