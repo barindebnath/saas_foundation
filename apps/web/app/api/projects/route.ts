@@ -9,11 +9,16 @@ export async function POST(request: Request) {
   if (!orgId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   
   const { name } = await request.json()
-  const project = await db.insert(projects).values({ name, organizationId: orgId }).returning()
-  
-  await logActivity(orgId, "project_created", `Created project: ${name}`, { projectId: project[0].id })
-  
-  return NextResponse.json(project[0])
+  const inserted = await db.insert(projects).values({ name, organizationId: orgId }).returning()
+  const project = inserted[0]
+
+  if (!project) {
+    return NextResponse.json({ error: "Failed to create project" }, { status: 500 })
+  }
+
+  await logActivity(orgId, "project_created", `Created project: ${name}`, { projectId: project.id })
+
+  return NextResponse.json(project)
 }
 
 export async function DELETE(request: Request) {
